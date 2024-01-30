@@ -16,6 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->longText('file_name');
             $table->longText('file_path');
+            $table->unsignedBigInteger('size')->nullable(); // Tamaño archivo
+            $table->string('type')->nullable(); // Tipo file or folder
+            $table->integer('file_count')->nullable(); // Count the files if folder
             $table->boolean('is_public')->default(false);
             $table->json('allowed_user_ids')->nullable();
             $table->timestamps();
