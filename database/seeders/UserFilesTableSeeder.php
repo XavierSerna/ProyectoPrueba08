@@ -12,6 +12,6 @@ class UserFilesTableSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\UserFile::factory(10)->create(); //ten registers
+        \App\Models\UserFile::factory(2)->create(); //ten registers
     }
 }

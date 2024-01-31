@@ -13,12 +13,18 @@ return new class extends Migration
     {
         Schema::create('user_files', function (Blueprint $table) {
             $table->id();
+
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->foreign('parent_id')->references('id')->on('user_files')->onDelete('cascade'); //on delete cascade will delete the child files if the parent is deleted
+
             $table->unsignedBigInteger('user_id')->nullable();
             $table->longText('file_name');
             $table->longText('file_path');
-            $table->unsignedBigInteger('size')->nullable(); // Tamaño archivo
-            $table->string('type')->nullable(); // Tipo file or folder
-            $table->integer('file_count')->nullable(); // Count the files if folder
+
+            $table->unsignedBigInteger('size')->nullable();
+            $table->string('type')->nullable();
+            $table->integer('file_count')->nullable();
+
             $table->boolean('is_public')->default(false);
             $table->json('allowed_user_ids')->nullable();
             $table->timestamps();
@@ -28,6 +34,8 @@ return new class extends Migration
             $table->string('public_key', 255)->nullable();
             $table->json('tags')->nullable();
             $table->boolean('fav')->default(false);
+
+            $table->index('parent_id');
         });
     }
 
