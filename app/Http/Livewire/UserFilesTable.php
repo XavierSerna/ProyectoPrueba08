@@ -10,10 +10,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
-//use Filament\Forms\Components\TextInput;
 
 use Illuminate\Support\HtmlString;
-//use Filament\Tables\Actions\Action;
 
 class UserFilesTable extends Component implements Tables\Contracts\HasTable
 {
@@ -43,7 +41,7 @@ class UserFilesTable extends Component implements Tables\Contracts\HasTable
             ->label('Name')
             ->formatStateUsing(function ($state, $record) { //estado y registro actual de cada valor file_name
                 if ($record->type === 'folder') { // if this file is folder type
-                    return new HtmlString('<a href="#" wire:click.prevent="viewFolder(' . $record->id . ')">' . $state . '</a>'); // defines the click and viewFolder function receives an id
+                    return new HtmlString('<a class="p-2 rounded bg-blue-100 text-blue-600 cursor-pointer" href="#" wire:click.prevent="viewFolder(' . $record->id . ')">' . $state . '</a>'); // defines the click and viewFolder function receives an id
                 }
                 return $state; //if its not a folder
             }),
@@ -78,14 +76,6 @@ class UserFilesTable extends Component implements Tables\Contracts\HasTable
     protected function getTableFilters(): array
     {
         return [
-/*             Filter::make('file_name')
-            ->form([
-                TextInput::make('file_name')
-                    ->placeholder('File Name'),
-            ])
-            ->query(fn (Builder $query, array $data): Builder => $query->where('file_name', 'like', '%' . $data['file_name'] . '%'))
-            ->label('Name'), */
-
             Filter::make('file_name')
             ->query(fn (Builder $query): Builder => $query->where('file_name', true))
             ->label('Name'),
@@ -94,15 +84,6 @@ class UserFilesTable extends Component implements Tables\Contracts\HasTable
             ->label('Type'),
         ];
     }
-
-/*     protected function getTableActions(): array
-    {
-        return [
-            Action::make('edit')
-                ->url(fn (UserFile $record): string => route('posts.edit', $record))
-                ->openUrlInNewTab()
-        ];
-    } */
 
     public function viewFolder($folderId)
     {
