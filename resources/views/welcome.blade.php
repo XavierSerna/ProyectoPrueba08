@@ -5,10 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  @livewireStyles
 </head>
 <body>
   
 @livewire('user-files-table')
 
+@livewireScripts
 </body>
 </html>
