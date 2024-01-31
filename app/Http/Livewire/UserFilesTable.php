@@ -12,15 +12,22 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 //use Filament\Forms\Components\TextInput;
 
+use Illuminate\Support\HtmlString;
 //use Filament\Tables\Actions\Action;
 
 class UserFilesTable extends Component implements Tables\Contracts\HasTable
 {
     use Tables\Concerns\InteractsWithTable;
 
+    public $folderId;
+
     protected function getTableQuery(): Builder
     {
-        return UserFile::query()->whereNull('parent_id');
+        // when folderid is no null / when is null
+        return UserFile::query()->when($this->folderId, 
+        function ($query) { return $query->where('parent_id', $this->folderId); }, //parentid = folderid
+        function ($query) { return $query->whereNull('parent_id'); } //parentid = null
+        );
     }
 
     protected function getTableColumns(): array 
@@ -29,10 +36,18 @@ class UserFilesTable extends Component implements Tables\Contracts\HasTable
             TextColumn::make('id')
             ->sortable()
             ->toggleable(isToggledHiddenByDefault: true),
+
             TextColumn::make('file_name')
             ->sortable()
             ->searchable()
-            ->label('Name'),
+            ->label('Name')
+            ->formatStateUsing(function ($state, $record) { //estado y registro actual de cada valor file_name
+                if ($record->type === 'folder') { // if this file is folder type
+                    return new HtmlString('<a href="#" wire:click.prevent="viewFolder(' . $record->id . ')">' . $state . '</a>'); // defines the click and viewFolder function receives an id
+                }
+                return $state; //if its not a folder
+            }),
+
             TextColumn::make('size')
             ->sortable()
             ->searchable()
@@ -88,6 +103,16 @@ class UserFilesTable extends Component implements Tables\Contracts\HasTable
                 ->openUrlInNewTab()
         ];
     } */
+
+    public function viewFolder($folderId)
+    {
+        $this->folderId = $folderId; // updates table
+    }
+
+    public function viewParent()
+    {
+        $this->folderId = null; // updates table
+    }
 
     public function render(): View
     {
