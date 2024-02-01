@@ -17,38 +17,20 @@ class UserFileFactory extends Factory
      */
     public function definition(): array
     {
-/*         $isFolder = $this->faker->boolean; // 50% is or isn't
-        $fileExtension = $this->faker->fileExtension; // Extension for files
-        $fileType = $isFolder ? 'folder' : $fileExtension; // 'folder' or fileExtension */
-
-        //$parent_id = UserFile::whereNull('parent_id')->inRandomOrder()->first()->id;
-
-/*         $folder = UserFile::whereNull('parent_id')->inRandomOrder()->first();
-        $parent_id = $folder ? $folder->id : null; // Asegura el null */
+        $isFolder = $this->faker->boolean(20); // 20%
+        $isChild = !$isFolder && $this->faker->boolean(80);
+        $parent = $isChild ? UserFile::where('type', 'folder')->inRandomOrder()->first() : null ; // if children then get random parent
 
         return [
-            'parent_id' => null, //$parent_id,
+            'parent_id' => $parent ? $parent->id : null,
 
             'user_id' => null,
-/*             'file_name' => $isFolder ? $this->faker->word : $this->faker->word . '.' . $fileExtension, */
             'file_name' => $this->faker->word,
-            'file_path' => $this->faker->filePath(), //mimeType(),
+            'file_path' => $this->faker->filePath(),
 
-/*             'size' => $isFolder ? null : $this->faker->numberBetween(1000, 1000000), // Size if file, null if isFolder
-            'type' => $fileType,
-            'file_count' => $isFolder ? $this->faker->numberBetween(0, 50) : null, // Quantity if isFolder, null if not */
-            'size' => $this->faker->numberBetween(1000, 100000),
-            'type' => $this->faker->fileExtension(),
-            'file_count' => null, //$faker->numberBetween(0, 10),
-
-/*             'is_public' => $this->faker->boolean,
-            'allowed_user_ids' => json_encode([$this->faker->randomNumber()]),
-            'categories' => json_encode([$this->faker->word]),
-            'upload' => json_encode([$this->faker->imageUrl()]),
-            'description' => $this->faker->paragraph,
-            'public_key' => $this->faker->md5,
-            'tags' => json_encode([$this->faker->word]),
-            'fav' => $this->faker->boolean */
+            'size' => $isFolder ? null : $this->faker->numberBetween(1000, 100000),
+            'type' => $isFolder ? 'folder' : $this->faker->fileExtension(),
+            'file_count' => $isFolder ? $this->faker->numberBetween(0, 10) : null,
         ];
     }
 }
